@@ -9,7 +9,7 @@ void playGame() {
     char key = 'd';
     while (snake.body[0].x >= 0 && snake.body[0].x < LENGTH &&
         snake.body[0].y >= 0 && snake.body[0].y < WIDE) {
-        Sleep(100);  // 控制蛇的移动速度
+        Sleep(100);  
         if (_kbhit()) {
             key = _getch();
         }
@@ -21,7 +21,6 @@ void playGame() {
         default: break;
         }
 
-        // 保存旧的蛇尾位置
         int oldTailX = snake.body[snake.curSize - 1].x;
         int oldTailY = snake.body[snake.curSize - 1].y;
 
@@ -33,33 +32,27 @@ void playGame() {
         snake.body[0].x += kx;
         snake.body[0].y += ky;
 
-        // 检查是否吃到食物
         if (snake.body[0].x == food.x && snake.body[0].y == food.y) {
             snake.curSize++;
             initFood();
             score += 10;
-            // 添加新的蛇尾位置
             snake.body[snake.curSize - 1].x = oldTailX;
             snake.body[snake.curSize - 1].y = oldTailY;
         }
         else {
-            // 用空格覆盖旧的蛇尾位置
             COORD oldTailCoord = { oldTailX, oldTailY };
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), oldTailCoord);
             putchar(' ');
         }
 
-        // 绘制新的蛇头和食物
         initUI();
 
-        // 检查是否撞到自己
         for (size_t i = 1; i < snake.curSize; i++) {
             if (snake.body[0].x == snake.body[i].x && snake.body[0].y == snake.body[i].y) {
                 return;
             }
         }
 
-        // 检查是否撞到边界
         if (snake.body[0].x < 0 || snake.body[0].x >= LENGTH || snake.body[0].y < 0 || snake.body[0].y >= WIDE) {
             return;
         }
